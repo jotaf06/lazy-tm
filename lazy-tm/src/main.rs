@@ -1,68 +1,7 @@
-struct App {
-    tasks: Vec<Task>,
-    next_id: u64,
-}
+mod task;
+mod app;
 
-impl App {
-    fn new() -> App {
-        App {
-            tasks: Vec::new(),
-            next_id: 0,
-        }
-    }
-
-    fn generate_task_id(&mut self) -> u64 {
-        self.next_id += 1;
-        self.next_id
-    }
-
-    fn add_task(&mut self, title: String, description: String) {
-        let id = self.generate_task_id();
-        let task = Task::new(id, title, description);
-
-        self.tasks.push(task);
-    }
-
-    fn toggle_task(&mut self, id: u64) {
-        for task in &mut self.tasks {
-            if task.id == id {
-                task.is_checked = !task.is_checked;
-                break;
-            }
-        }
-    }
-
-    fn remove_task(&mut self, id: u64) {
-        for index in 0..self.tasks.len() {
-            if self.tasks[index].id == id {
-                self.tasks.remove(index);
-                break;
-            }
-        }
-    }
-
-    fn list_tasks(&self) -> &Vec<Task> {
-        &self.tasks
-    }
-}
-
-struct Task {
-    id: u64,
-    title: String,
-    description: String,
-    is_checked: bool,
-}
-
-impl Task {
-    fn new(id: u64, title: String, description: String) -> Task {
-        Task {
-            id,
-            title,
-            description,
-            is_checked: false,
-        }
-    }
-}
+use app::App;
 
 fn main() {
     let mut task_list = App::new();
