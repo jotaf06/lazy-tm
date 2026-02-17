@@ -1,13 +1,14 @@
 use crate::task::Task;
 
+#[derive(Default)]
 pub struct App {
-    tasks: Vec<Task>,
+    pub tasks: Vec<Task>,
     next_id: u64,
 }
 
 impl App {
-    pub fn new() -> App {
-        App {
+    pub fn default() -> Self {
+        Self {
             tasks: Vec::new(),
             next_id: 0,
         }
