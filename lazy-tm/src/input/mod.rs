@@ -1,5 +1,5 @@
-use ratatui::crossterm::event::{self, Event, KeyCode};
 use color_eyre::eyre::Result;
+use ratatui::crossterm::event::{self, Event, KeyCode};
 
 pub enum AppEvent {
     Quit,
@@ -23,13 +23,13 @@ pub fn read_event() -> Result<AppEvent> {
                 'D' => AppEvent::Delete,
                 'a' => AppEvent::Add,
                 _ => AppEvent::None,
-            }
-
+            },
+            KeyCode::Down => AppEvent::SelNext,
+            KeyCode::Up => AppEvent::SelPrevious,
             _ => AppEvent::None,
-
         };
 
-        return Ok(event)
+        return Ok(event);
     }
 
     Ok(AppEvent::None)

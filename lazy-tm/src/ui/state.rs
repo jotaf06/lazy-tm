@@ -1,13 +1,33 @@
 use ratatui::widgets::ListState;
 
+#[derive(Debug, PartialEq)]
+pub enum Mode {
+    Normal,
+    Editing,
+}
+
+#[derive(Debug, PartialEq)]
+pub enum InputType {
+    Title,
+    Description,
+}
+
 pub struct UiState {
     pub list_state: ListState,
+    pub mode: Mode,
+    pub title: String,
+    pub description: String,
+    pub input_type: InputType,
 }
 
 impl UiState {
     pub fn default() -> Self {
         Self {
             list_state: ListState::default(),
+            mode: Mode::Normal,
+            title: String::new(),
+            description: String::new(),
+            input_type: InputType::Title,
         }
     }
 
