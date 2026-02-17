@@ -21,6 +21,8 @@ pub fn render(frame: &mut Frame, state: &mut UiState, app: &mut App) {
         "< j >".blue().bold(),
         " Toggle Task ".into(),
         "< space >".blue().bold(),
+        " Delete Task ".into(),
+        "< D >".blue().bold(),
         " Quit ".into(),
         "< q > ".blue().bold(),
     ]);

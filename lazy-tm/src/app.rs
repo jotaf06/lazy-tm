@@ -34,17 +34,4 @@ impl App {
             }
         }
     }
-
-    pub fn remove_task(&mut self, id: u64) {
-        for index in 0..self.tasks.len() {
-            if self.tasks[index].id == id {
-                self.tasks.remove(index);
-                break;
-            }
-        }
-    }
-
-    pub fn list_tasks(&self) -> &[Task] {
-        &self.tasks
-    }
 }
