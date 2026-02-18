@@ -3,15 +3,14 @@ use crate::task::Task;
 #[derive(Default)]
 pub struct App {
     pub tasks: Vec<Task>,
-    next_id: u64,
+    pub next_id: u64,
 }
 
 impl App {
-    pub fn default() -> Self {
-        Self {
-            tasks: Vec::new(),
-            next_id: 0,
-        }
+    pub fn new(tasks: Vec<Task>) -> Self {
+        let next_id = tasks.iter().map(|task| task.id).max().unwrap_or(0);
+
+        Self { tasks, next_id }
     }
 
     pub fn generate_task_id(&mut self) -> u64 {
@@ -33,5 +32,10 @@ impl App {
                 break;
             }
         }
+    }
+
+    pub fn clear_all_tasks(&mut self) {
+        self.tasks.clear();
+        self.next_id = 0;
     }
 }

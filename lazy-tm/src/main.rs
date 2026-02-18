@@ -8,6 +8,9 @@ use ui::state::UiState;
 mod input;
 use input::{AppEvent, read_event};
 
+mod storage;
+use storage::{load, save};
+
 use app::App;
 use color_eyre::eyre::Result;
 use ratatui::{
@@ -18,20 +21,21 @@ use ratatui::{
 
 use crate::ui::state::{InputType, Mode};
 
-fn main() -> Result<()> {
-    let mut app = App::default();
-    let mut state = UiState::default();
+const TASKS_PATH: &str = "tasks.json";
 
+fn main() -> Result<()> {
     color_eyre::install()?;
 
-    app.add_task(String::from("Buy Milk"), String::from("Buy Milk"));
-    app.add_task(String::from("Buy Milk"), String::from("Buy Milk"));
-    app.add_task(String::from("Buy Milk"), String::from("Buy Milk"));
+    let tasks = load(TASKS_PATH)?;
+
+    let mut app = App::new(tasks);
+    let mut state = UiState::default();
 
     let terminal = ratatui::init();
     let result = run(terminal, &mut state, &mut app);
 
     restore();
+    println!("Changes saved. See you soon! :)");
     result
 }
 
@@ -103,6 +107,11 @@ fn run(mut terminal: DefaultTerminal, state: &mut UiState, app: &mut App) -> Res
                         }
                     }
 
+                    AppEvent::ClearAll => {
+                        app.clear_all_tasks();
+                        state.list_state.select(None);
+                    }
+
                     AppEvent::Add => {
                         state.mode = Mode::Editing;
                         state.title.clear();
@@ -162,6 +171,8 @@ fn run(mut terminal: DefaultTerminal, state: &mut UiState, app: &mut App) -> Res
             }
         }
     }
+
+    save(TASKS_PATH, &app.tasks)?;
 
     Ok(())
 }
