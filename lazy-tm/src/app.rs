@@ -25,6 +25,16 @@ impl App {
         self.tasks.push(task);
     }
 
+    pub fn edit_task(&mut self, id: u64, title: String, description: String) {
+        for task in &mut self.tasks {
+            if task.id == id {
+                task.title = title;
+                task.description = description;
+                break;
+            }
+        }
+    }
+
     pub fn toggle_task(&mut self, id: u64) {
         for task in &mut self.tasks {
             if task.id == id {

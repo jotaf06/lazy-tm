@@ -18,6 +18,7 @@ pub struct UiState {
     pub title: String,
     pub description: String,
     pub input_type: InputType,
+    pub is_editing: bool,
 }
 
 impl UiState {
@@ -28,6 +29,7 @@ impl UiState {
             title: String::new(),
             description: String::new(),
             input_type: InputType::Title,
+            is_editing: false,
         }
     }
 

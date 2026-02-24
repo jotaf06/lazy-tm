@@ -119,6 +119,18 @@ fn run(mut terminal: DefaultTerminal, state: &mut UiState, app: &mut App) -> Res
                         state.input_type = InputType::Title;
                     }
 
+                    AppEvent::EditTask => {
+                        state.mode = Mode::Editing;
+                        state.input_type = InputType::Title;
+                        state.is_editing = true;
+                        state.title = app.tasks[state.list_state.selected().unwrap()]
+                            .title
+                            .clone();
+                        state.description = app.tasks[state.list_state.selected().unwrap()]
+                            .description
+                            .clone();
+                    }
+
                     _ => {}
                 }
             }
@@ -147,8 +159,21 @@ fn run(mut terminal: DefaultTerminal, state: &mut UiState, app: &mut App) -> Res
                         }
 
                         KeyCode::Enter => {
-                            if !state.title.is_empty() {
-                                app.add_task(state.title.clone(), state.description.clone());
+                            if state.is_editing {
+                                if let Some(selected_index) = state.list_state.selected() {
+                                    if selected_index < app.tasks.len() {
+                                        let id = app.tasks[selected_index].id;
+                                        app.edit_task(
+                                            id,
+                                            state.title.clone(),
+                                            state.description.clone(),
+                                        );
+                                    }
+                                }
+                            } else {
+                                if !state.title.is_empty() {
+                                    app.add_task(state.title.clone(), state.description.clone());
+                                }
                             }
 
                             state.title.clear();

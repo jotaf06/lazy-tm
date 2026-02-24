@@ -8,6 +8,7 @@ pub enum AppEvent {
     ToggleTask,
     Delete,
     Add,
+    EditTask,
     ClearAll,
     None,
 }
@@ -24,8 +25,10 @@ pub fn read_event() -> Result<AppEvent> {
                 'D' => AppEvent::Delete,
                 'a' => AppEvent::Add,
                 'C' => AppEvent::ClearAll,
+                'e' => AppEvent::EditTask,
                 _ => AppEvent::None,
             },
+
             KeyCode::Down => AppEvent::SelNext,
             KeyCode::Up => AppEvent::SelPrevious,
             _ => AppEvent::None,
