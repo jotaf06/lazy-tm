@@ -49,7 +49,10 @@ fn run(mut terminal: DefaultTerminal, state: &mut UiState, app: &mut App) -> Res
             Mode::Normal => {
                 let event = read_event()?;
                 match event {
-                    AppEvent::Quit => break,
+                    AppEvent::Quit => {
+                        app.pause_all_timers();
+                        break;
+                    }
                     AppEvent::SelNext => {
                         let i = match state.list_state.selected() {
                             Some(i) => {
@@ -84,7 +87,12 @@ fn run(mut terminal: DefaultTerminal, state: &mut UiState, app: &mut App) -> Res
                         if let Some(selected_index) = state.list_state.selected() {
                             if let Some(task) = app.tasks.get(selected_index) {
                                 let id = task.id;
+                                let is_checked = task.is_checked;
                                 app.toggle_task(id);
+
+                                if is_checked {
+                                    app.toggle_timer(id);
+                                }
                             }
                         }
                     }
@@ -129,6 +137,19 @@ fn run(mut terminal: DefaultTerminal, state: &mut UiState, app: &mut App) -> Res
                         state.description = app.tasks[state.list_state.selected().unwrap()]
                             .description
                             .clone();
+                    }
+
+                    AppEvent::StartTimer => {
+                        if let Some(selected_index) = state.list_state.selected() {
+                            if selected_index < app.tasks.len() {
+                                if !app.tasks[selected_index].is_checked {
+                                    if !app.tasks[selected_index].is_running() {
+                                        let id = app.tasks[selected_index].id;
+                                        app.toggle_timer(id);
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     _ => {}

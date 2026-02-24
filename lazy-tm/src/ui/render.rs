@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use ratatui::{
     Frame,
     layout::{Constraint, Layout, Margin, Rect},
@@ -12,6 +14,19 @@ use crate::{
     app::App,
     ui::state::{InputType, Mode},
 };
+
+fn format_duration(duration: Duration) -> String {
+    let total = duration.as_secs();
+    let hours = total / 3600;
+    let minutes = (total % 3600) / 60;
+    let seconds = total % 60;
+
+    if hours > 0 {
+        return format!("{:02}:{:02}:{:02}", hours, minutes, seconds);
+    }
+
+    format!("{:02}:{:02}", minutes, seconds)
+}
 
 pub fn render(frame: &mut Frame, state: &mut UiState, app: &mut App) {
     let title = Line::from("  Lazy Task Manager  ".bold());
@@ -50,6 +65,12 @@ pub fn render(frame: &mut Frame, state: &mut UiState, app: &mut App) {
             " Add Task: ".into(),
             "a".light_yellow().bold(),
             " |".into(),
+            " Edit Task: ".into(),
+            "e".light_yellow().bold(),
+            " |".into(),
+            " Start Timer: ".into(),
+            "S".light_yellow().bold(),
+            " |".into(),
             " Delete Task: ".into(),
             "D".light_yellow().bold(),
             " |".into(),
@@ -78,9 +99,18 @@ pub fn render(frame: &mut Frame, state: &mut UiState, app: &mut App) {
 
     let list = List::new(app.tasks.iter().map(|x| {
         let status = if x.is_checked { "[x]" } else { "[ ]" };
+
+        let timer = if x.is_running() {
+            format!(" ⏱  {}", format_duration(x.current_elapsed()))
+        } else if x.elapsed > Duration::ZERO {
+            format!(" ⏸ {}", format_duration(x.current_elapsed()))
+        } else {
+            String::new()
+        };
+
         ListItem::new(format!(
-            " {}. {}: {} {}",
-            x.id, x.title, x.description, status
+            " {}. {}: {} {} {}",
+            x.id, x.title, x.description, status, timer
         ))
     }))
     .highlight_style(

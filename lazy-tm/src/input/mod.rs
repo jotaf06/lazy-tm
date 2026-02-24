@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use color_eyre::eyre::Result;
 use ratatui::crossterm::event::{self, Event, KeyCode};
 
@@ -10,10 +12,15 @@ pub enum AppEvent {
     Add,
     EditTask,
     ClearAll,
+    StartTimer,
     None,
 }
 
 pub fn read_event() -> Result<AppEvent> {
+    if !event::poll(Duration::from_millis(500))? {
+        return Ok(AppEvent::None);
+    }
+
     if let Event::Key(key) = event::read()? {
         let event = match key.code {
             KeyCode::Esc => AppEvent::Quit,
@@ -26,6 +33,7 @@ pub fn read_event() -> Result<AppEvent> {
                 'a' => AppEvent::Add,
                 'C' => AppEvent::ClearAll,
                 'e' => AppEvent::EditTask,
+                'S' => AppEvent::StartTimer,
                 _ => AppEvent::None,
             },
 

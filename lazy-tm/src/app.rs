@@ -35,10 +35,24 @@ impl App {
         }
     }
 
+    pub fn toggle_timer(&mut self, id: u64) {
+        for task in &mut self.tasks {
+            if task.id == id {
+                task.toggle_timer();
+                break;
+            }
+        }
+    }
+
     pub fn toggle_task(&mut self, id: u64) {
         for task in &mut self.tasks {
             if task.id == id {
                 task.is_checked = !task.is_checked;
+
+                if task.is_checked {
+                    task.stop_timer();
+                }
+
                 break;
             }
         }
@@ -47,5 +61,11 @@ impl App {
     pub fn clear_all_tasks(&mut self) {
         self.tasks.clear();
         self.next_id = 0;
+    }
+
+    pub fn pause_all_timers(&mut self) {
+        for task in &mut self.tasks {
+            task.stop_timer();
+        }
     }
 }
