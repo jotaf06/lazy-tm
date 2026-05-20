@@ -8,6 +8,8 @@ pub struct Task {
     pub title: String,
     pub description: String,
     pub is_checked: bool,
+    #[serde(default)]
+    pub has_timer: bool,
     pub elapsed: Duration,
 
     #[serde(skip)]
@@ -21,9 +23,14 @@ impl Task {
             title,
             description,
             is_checked: false,
+            has_timer: false,
             elapsed: Duration::ZERO,
             timer_start: None,
         }
+    }
+
+    pub fn create_timer(&mut self) {
+        self.has_timer = true;
     }
 
     pub fn is_running(&self) -> bool {

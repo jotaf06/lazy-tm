@@ -12,7 +12,13 @@ pub enum AppEvent {
     Add,
     EditTask,
     ClearAll,
-    StartTimer,
+    CreateTimer,
+    ToggleTimer,
+    ToggleLayout,
+    FocusLeft,
+    FocusRight,
+    Confirm,
+    Back,
     None,
 }
 
@@ -23,7 +29,8 @@ pub fn read_event() -> Result<AppEvent> {
 
     if let Event::Key(key) = event::read()? {
         let event = match key.code {
-            KeyCode::Esc => AppEvent::Quit,
+            KeyCode::Esc => AppEvent::Back,
+            KeyCode::Enter => AppEvent::Confirm,
             KeyCode::Char(char) => match char {
                 'q' => AppEvent::Quit,
                 'j' => AppEvent::SelPrevious,
@@ -33,10 +40,13 @@ pub fn read_event() -> Result<AppEvent> {
                 'a' => AppEvent::Add,
                 'C' => AppEvent::ClearAll,
                 'e' => AppEvent::EditTask,
-                'S' => AppEvent::StartTimer,
+                'T' => AppEvent::CreateTimer,
+                'S' => AppEvent::ToggleTimer,
+                'M' => AppEvent::ToggleLayout,
+                '1' => AppEvent::FocusLeft,
+                '2' => AppEvent::FocusRight,
                 _ => AppEvent::None,
             },
-
             KeyCode::Down => AppEvent::SelNext,
             KeyCode::Up => AppEvent::SelPrevious,
             _ => AppEvent::None,
